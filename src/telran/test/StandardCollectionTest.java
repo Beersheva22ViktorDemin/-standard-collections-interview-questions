@@ -5,7 +5,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import telran.util.StackInt;
+
 import java.util.*;
+import java.util.random.RandomGenerator;
 import java.util.stream.Collectors;
 class StandardCollectionTest {
 
@@ -28,6 +32,7 @@ class StandardCollectionTest {
 
 	}
 	@Test
+	@Disabled
 	void displayOccurrencesCount() {
 		String [] strings = {"lmn", "abc", "abc", "lmn", "a", "lmn"};
 		Arrays.stream(strings)
@@ -42,6 +47,45 @@ class StandardCollectionTest {
 		//Generate 1000000 random numbers [1-Integer.MAX_VALUE)
 		//Display digits and counts of their occurrences in descending order of the counts
 		//consider using flatMap for getting many from one
+//		Arrays.stream(null)
+	}
+	
+	@Test
+	void testStackInt() {
+		StackInt obj = new StackInt();
+		assertTrue(obj.isEmpty());
+		assertThrowsExactly(NoSuchElementException.class, () -> obj.getMax());
+		
+		obj.push(5);
+		assertFalse(obj.isEmpty());
+		
+		obj.push(10);
+		assertFalse(obj.isEmpty());
+		
+		assertEquals(10, obj.pop());
+		assertFalse(obj.isEmpty());
+		
+		assertEquals(5, obj.pop());
+		assertTrue(obj.isEmpty());
+		
+		assertThrowsExactly(NoSuchElementException.class, () -> obj.pop());
+		
+		//---
+		assertThrowsExactly(NoSuchElementException.class, () -> obj.getMax());
+		obj.push(5);
+		assertEquals(5, obj.getMax());
+		
+		obj.push(10);
+		assertEquals(10, obj.getMax());
+		
+		obj.push(7);
+		assertEquals(10, obj.getMax());
+		
+		assertEquals(7, obj.pop());
+		assertEquals(10, obj.getMax());
+		
+		assertEquals(10, obj.pop());
+		assertEquals(5, obj.getMax());
 	}
 
 

@@ -1,24 +1,36 @@
 package telran.util;
 
+import java.util.LinkedList;
+
 public class StackInt {
-	//TODO
+	private LinkedList<Integer> list = new LinkedList<>();
+	private LinkedList<Integer> maxStack = new LinkedList<>();
+	
 	//Write the following methods
 	//All methods should have complexity O[1]
-	void push(int num) {
+	public void push(int num) {
 		//adds num into top of stack
+		list.add(num);
+		if (maxStack.isEmpty() || num > maxStack.getLast()) {
+			maxStack.add(num);
+		}
 	}
-	int pop() {
+	public int pop() {
 		//returns a number from top of stack or throws NoSuchElementException
-		//if the stack is empty
-		return 0;
+		//if the stack is empty		
+		Integer result = list.removeLast();
+		if (result.equals(maxStack.getLast())) {
+			maxStack.removeLast();
+		}
+		return result;
 	}
-	boolean isEmpty () {
+	public boolean isEmpty () {
 		//returns true if the stack is empty, otherwise false
-		return false;
+		return list.isEmpty();
 	}
-	int getMax() {
+	public int getMax() {
 		//returns maximal value of the stack or throws NoSuchElementException
 		//if the stack is empty
-		return 0;
+		return maxStack.getLast();
 	}
 }
