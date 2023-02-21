@@ -9,8 +9,10 @@ import org.junit.jupiter.api.Test;
 import telran.util.StackInt;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.random.RandomGenerator;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 class StandardCollectionTest {
 
 	@BeforeEach
@@ -47,7 +49,13 @@ class StandardCollectionTest {
 		//Generate 1000000 random numbers [1-Integer.MAX_VALUE)
 		//Display digits and counts of their occurrences in descending order of the counts
 		//consider using flatMap for getting many from one
-//		Arrays.stream(null)
+		((new Random()).ints(1, Integer.MAX_VALUE).limit(1000000))
+		.flatMap(num -> Integer.toString(num).chars().map(c -> c-'0'))
+		.boxed()
+		.collect(Collectors.groupingBy(num -> num, Collectors.counting()))
+		.entrySet().stream().sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue()))
+		.forEach(num -> System.out.println(num))
+		;
 	}
 	
 	@Test
