@@ -20,11 +20,11 @@ public class MultiCountersImpl implements MultiCounters {
 		if (counter >= maxList.size()) {
 			if (counter > maxList.size()) {
 				maxList.add(new HashSet<Object>());
-			} 
-			maxList.get(counter - 1).add(item);
-			if (counter > 1) {
-				removeFromMax(item, counter - 1);
 			}
+		}
+		maxList.get(counter - 1).add(item);
+		if (counter > 1) {
+			removeFromMax(item, counter - 1);
 		}
 		
 		return counter;

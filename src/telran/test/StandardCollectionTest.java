@@ -151,6 +151,9 @@ class StandardCollectionTest {
 		assertEquals(2, counter.addItem(item));
 		assertEquals(2, counter.getValue(item));
 		
+		assertEquals(3, counter.addItem(item));
+		
+		counter.addItem(otherItem);
 		counter.addItem(otherItem);
 		assertNotNull(counter.getMaxItems());
 		assertEquals(1, counter.getMaxItems().size());
@@ -158,6 +161,11 @@ class StandardCollectionTest {
 		
 		assertEquals(true, counter.remove(item));
 		assertEquals(false, counter.remove(item));
+		
+		assertNotNull(counter.getMaxItems());
+		assertEquals(1, counter.getMaxItems().size());
+		assertEquals(otherItem, counter.getMaxItems().toArray()[0]);
+		
 		assertEquals(true, counter.remove(otherItem));
 		assertNotNull(counter.getMaxItems());
 		assertEquals(0, counter.getMaxItems().size());
