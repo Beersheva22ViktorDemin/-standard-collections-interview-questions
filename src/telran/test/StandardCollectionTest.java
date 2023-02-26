@@ -154,12 +154,7 @@ class StandardCollectionTest {
 		counter.addItem(otherItem);
 		assertNotNull(counter.getMaxItems());
 		assertEquals(1, counter.getMaxItems().size());
-		
-		assertInstanceOf(Entry.class, counter.getMaxItems().toArray()[0]);
-		@SuppressWarnings("unchecked")
-		Entry<Object, Integer> entry = (Entry<Object, Integer>) counter.getMaxItems().toArray()[0];
-		assertEquals(item, entry.getKey());
-		assertEquals(2, entry.getValue());
+		assertEquals(item, counter.getMaxItems().toArray()[0]);
 		
 		assertEquals(true, counter.remove(item));
 		assertEquals(false, counter.remove(item));

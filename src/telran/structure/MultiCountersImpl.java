@@ -1,11 +1,10 @@
 package telran.structure;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class MultiCountersImpl implements MultiCounters {
 	HashMap<Object, Integer> map = new HashMap<Object, Integer>();
+	ArrayList<Set<Object>> maxList = new ArrayList<>();
 
 	@Override
 	public Integer addItem(Object item) {
@@ -16,6 +15,18 @@ public class MultiCountersImpl implements MultiCounters {
 			counter++;
 		}
 		map.put(item, counter);
+		
+		
+		if (counter >= maxList.size()) {
+			if (counter > maxList.size()) {
+				maxList.add(new HashSet<Object>());
+			} 
+			maxList.get(counter - 1).add(item);
+			if (counter > 1) {
+				removeFromMax(item, counter - 1);
+			}
+		}
+		
 		return counter;
 	}
 
@@ -26,19 +37,29 @@ public class MultiCountersImpl implements MultiCounters {
 
 	@Override
 	public boolean remove(Object item) {
-		return map.remove(item) != null ? true : false;
+		Integer count = map.remove(item);
+		boolean result = count != null ? true : false;
+		if (count != null && count == maxList.size()) {
+			removeFromMax(item, count);
+		}
+		
+		return result;
 	}
 
+	private void removeFromMax(Object item, Integer count) {
+		Set<Object> list = maxList.get(count - 1);
+		list.remove(item);
+		if (list.isEmpty() && count.equals(maxList.size())) {
+			maxList.remove(count - 1);
+		}
+	}
+	
 	@Override
 	public Set<Object> getMaxItems() {
-		Integer[] max = {-1};
-		map.forEach((item, count) -> {
-			if (count > max[0]) {
-				max[0] = count;
-			}
-		});
 		Set<Object> set = new HashSet<>();
-		map.entrySet().stream().filter(n -> n.getValue() == max[0]).forEach(set::add);
+		if (!maxList.isEmpty()) {
+			maxList.get(maxList.size() - 1).forEach(set::add);
+		}
 		return set;
 	}
 
