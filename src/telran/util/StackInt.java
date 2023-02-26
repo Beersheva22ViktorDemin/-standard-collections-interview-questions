@@ -11,7 +11,7 @@ public class StackInt {
 	public void push(int num) {
 		//adds num into top of stack
 		list.add(num);
-		if (maxStack.isEmpty() || num > maxStack.getLast()) {
+		if (maxStack.isEmpty() || num >= maxStack.getLast()) {
 			maxStack.add(num);
 		}
 	}
