@@ -6,9 +6,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import telran.structure.MultiCounters;
+import telran.structure.MultiCountersImpl;
 import telran.util.StackInt;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Supplier;
 import java.util.random.RandomGenerator;
 import java.util.stream.Collectors;
@@ -103,25 +106,65 @@ class StandardCollectionTest {
 		int ar1[] = {1000000, -1000000000, 3, -4};
 		assertEquals(200, maxNumberWithNegativeImage(ar));
 		assertEquals(-1, maxNumberWithNegativeImage(ar1));
-
-
 	}
+
 	int maxNumberWithNegativeImage(int array[]) {
-		//TODO
 		//return maximal positive number having it negative image or -1 if none such numbers
-		return -1;
+		int[] max = {-1};
+		HashSet<Integer> set = new HashSet<>();
+		Arrays.stream(array).filter(n -> n < 0).forEach(set::add);
+		Arrays.stream(array).filter(n -> n > 0).forEach(n -> {
+			if (n > max[0] && set.contains(-n)) {
+				max[0] = n;
+			}
+		});
+		return max[0];
 	}
+	
+	@Test
 	void treeIteratingTest() {
 		int array[] = {1, 11, 111, 32, 9, 1234, 99, 992};
 		createAndIterateTreeInOrder(array);
 	}
 
 	private void createAndIterateTreeInOrder(int[] array) {
-		// TODO 
 		//create tree, add in tree numbers from a given array
 		//and iterate in the order of array defined in 69
-
+		Comparator<Integer> comp = (a, b) -> {return Integer.compare(sumDigits(a), sumDigits(b));};
+		TreeSet<Integer> tree = new TreeSet<>(comp);
+		Arrays.stream(array).forEach(tree::add);
+		tree.forEach(n -> System.out.printf("%d ", n));
+		
 	}
-
-
+	
+	private int sumDigits(Integer number) {
+		return number.toString().chars().map(c -> c-'0').boxed().collect(Collectors.summingInt(Integer::intValue));
+	}
+	
+	@Test
+	void MultiCountersTest() {
+		MultiCounters counter = new MultiCountersImpl();
+		Integer item = 1;
+		Integer otherItem = 10;
+		assertEquals(null, counter.getValue(item));
+		assertEquals(1, counter.addItem(item));
+		assertEquals(2, counter.addItem(item));
+		assertEquals(2, counter.getValue(item));
+		
+		counter.addItem(otherItem);
+		assertNotNull(counter.getMaxItems());
+		assertEquals(1, counter.getMaxItems().size());
+		
+		assertInstanceOf(Entry.class, counter.getMaxItems().toArray()[0]);
+		@SuppressWarnings("unchecked")
+		Entry<Object, Integer> entry = (Entry<Object, Integer>) counter.getMaxItems().toArray()[0];
+		assertEquals(item, entry.getKey());
+		assertEquals(2, entry.getValue());
+		
+		assertEquals(true, counter.remove(item));
+		assertEquals(false, counter.remove(item));
+		assertEquals(true, counter.remove(otherItem));
+		assertNotNull(counter.getMaxItems());
+		assertEquals(0, counter.getMaxItems().size());
+	}
 }
