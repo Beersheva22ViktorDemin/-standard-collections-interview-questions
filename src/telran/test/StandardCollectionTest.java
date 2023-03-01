@@ -6,8 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import telran.structure.MultiCounters;
-import telran.structure.MultiCountersImpl;
+import telran.util.MultiCounters;
+import telran.util.MultiCountersImpl;
 import telran.util.StackInt;
 
 import java.util.*;
