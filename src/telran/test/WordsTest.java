@@ -1,63 +1,43 @@
 package telran.test;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import telran.util.Words;
-import telran.util.WordsImpl;
+import telran.util.WordsTreeImpl;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.*;
+class WordsTest {
 
-import org.junit.jupiter.api.BeforeEach;
+	String words[]= {"abcdef","ab123","aaa","ab","ablmn","abbbb",
+			"a", "ABd","bbb", "B12", "*/"};
+	String wordsStartB[] = {"B12", "bbb"};
+	String wordsStartAB[] = {"ab","ab123","abbbb","abcdef","ABd","ablmn"};
+	String wordsStartABC[] = {"abcdef"};
+	String wordsStartAsteric[] = {"*/"};
+	Words elasticSearch;
+		@BeforeEach
+		void setUp() throws Exception {
+			elasticSearch = new WordsTreeImpl();
+			for(String word: words) {
+				elasticSearch.addWord(word);
+			}
 
-public class WordsTest {
-    private Words words;
 
-    @BeforeEach
-    public void setUp() {
-        words = new WordsImpl();
-    }
+		}
 
-    @Test
-    public void testAddWord() {
-        // Add a word to the Words object
-        boolean result = words.addWord("hello");
-        assertTrue(result);
+		@Test
+		void test() {
+			assertArrayEquals(wordsStartABC,
+					elasticSearch.getWordsByPrefix("abc").toArray(String[]::new));
+			assertArrayEquals(wordsStartB, elasticSearch.getWordsByPrefix("B").toArray(String[]::new));
+			assertArrayEquals(wordsStartAB, elasticSearch.getWordsByPrefix("ab").toArray(String[]::new));
+			assertArrayEquals(wordsStartAsteric, elasticSearch.getWordsByPrefix("*").toArray(String[]::new));
 
-        // Check that the word was added
-        List<String> wordsWithPrefix = words.getWordsByPrefix("h");
-        assertEquals(Arrays.asList("hello"), wordsWithPrefix);
+		}
 
-        // Add the same word again
-        result = words.addWord("hello");
-        assertFalse(result);
 
-        // Check that the word wasn't added again
-        wordsWithPrefix = words.getWordsByPrefix("h");
-        assertEquals(Arrays.asList("hello"), wordsWithPrefix);
-    }
-
-    @Test
-    public void testGetWordsByPrefix() {
-        // Add some words with different prefixes
-        words.addWord("hello");
-        words.addWord("help");
-        words.addWord("happy");
-        words.addWord("hat");
-        words.addWord("house");
-
-        // Test some prefix searches
-        List<String> wordsWithPrefix = words.getWordsByPrefix("h");
-        assertEquals(Arrays.asList("hello", "help", "happy", "hat", "house"), wordsWithPrefix);
-
-        wordsWithPrefix = words.getWordsByPrefix("he");
-        assertEquals(Arrays.asList("hello", "help"), wordsWithPrefix);
-
-        wordsWithPrefix = words.getWordsByPrefix("ho");
-        assertEquals(Collections.singletonList("house"), wordsWithPrefix);
-
-        wordsWithPrefix = words.getWordsByPrefix("xyz");
-        assertEquals(Collections.emptyList(), wordsWithPrefix);
-    }
 }
